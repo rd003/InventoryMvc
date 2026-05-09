@@ -1,0 +1,63 @@
+﻿@model InventoryMvc.ViewModels.CateogoryDisplayViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+<div style="width:70%">
+<h2>Categories</h2>
+<a href="/Category/AddCategory" class="btn btn-info mb-2">Add more</a>
+
+@if (Model != null && Model.Categories.Count() > 0)
+{
+    <form method="get" class="d-flex gap-2 mb-2">
+        <input type="text" name="sTerm" placeholder="Search with category name" class="form-control" />
+
+        <button class="btn btn-info" type="submit">Search</button>
+        <a class="btn btn-info" href="/Category/Index">Clear</a>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Parent Category</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var category in Model.Categories)
+            {
+                <tr>
+                    <td>@category.CategoryName</td>
+                    <td>@category.ParentCategory</td>
+                    <td>
+                        <a class="btn btn-success" href="/Category/UpdateCategory?id=@category.Id">Edit</a>
+                        <a class="btn btn-danger" onclick="return window.confirm('Are you sure to delete it?')" href="/Category/DeleteCategory?id=@category.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* pagination *@
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class='page-item @(Model.Page==1?"disabled":"")'>
+                    <a class="page-link" tabindex="-1" href="/Category/Index?sTerm=@Model.STerm&page=@(Model.Page-1)&limit=@Model.Limit">Previous</a>
+                </li>
+                @for(int i=1; i <= Model.TotalPages; i++)
+                {
+                    <li class='page-item @(Model.Page==i?"active":"")'><a class="page-link" href="/Category/Index?sTerm=@Model.STerm&page=@i&limit=@Model.Limit">@i</a></li>
+                }
+                <li class='page-item @(Model.Page == Model.TotalPages ? "disabled" : "")'>
+                    <a class="page-link" href="/Category/Index?sTerm=@Model.STerm&page=@(Model.Page + 1)&limit=@Model.Limit">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+}
+else
+{
+    <h3>No record(s) found</h3>
+}
+</div>

@@ -25,19 +25,19 @@
         <div class="sidebar-nav">
             <div class="nav-section-label">Main</div>
 
-            <a class="nav-item-link active" onclick="setActive(this)">
+            <a class="nav-item-link active" href="/Dashboard/Index" onclick="setActive(this)">
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span class="link-text">Dashboard</span>
             </a>
-            <a class="nav-item-link" onclick="setActive(this)">
+            <a class="nav-item-link" href="/Category/Index" onclick="setActive(this)">
                 <i class="bi bi-tag-fill"></i>
                 <span class="link-text">Categories</span>
             </a>
-            <a class="nav-item-link" onclick="setActive(this)">
+            <a class="nav-item-link" href="/Product/Index" onclick="setActive(this)">
                 <i class="bi bi-box-fill"></i>
                 <span class="link-text">Products</span>
             </a>
-            <a class="nav-item-link" onclick="setActive(this)">
+            <a class="nav-item-link" href="/Supplier/Index" onclick="setActive(this)">
                 <i class="bi bi-truck"></i>
                 <span class="link-text">Suppliers</span>
             </a>
@@ -96,6 +96,7 @@
 
         <!-- Page Content -->
         <div class="page-content">
+            <partial name="_Notifications"/>
             @RenderBody()
         </div>
 

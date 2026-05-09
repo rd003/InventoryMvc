@@ -1,0 +1,30 @@
+﻿@model InventoryMvc.ViewModels.AddCategoryViewModel
+@{
+    ViewData["Title"] = "Update Category";
+}
+
+<div style="width:60%">
+    <h2>Add Category</h2>
+     <a class="btn btn-info mb-2" href="/Category/Index">Show All</a>
+
+     <form method="post">
+         <input type="hidden" asp-for="Id"/>
+        <input type="hidden" asp-for="CreateDate" />
+         <div class="mb-2">
+            <label class="form-label">Name*</label>
+            <input type="text" asp-for="CategoryName" class="form-control"/>
+            <span asp-validation-for="CategoryName"></span>
+         </div>
+
+        <div class="mb-2">
+            <label class="form-label">Parent Category</label>
+            <select class="form-control" asp-for="CategoryId" asp-items="Model.CategoryList">
+                <option value="">--Select Category--</option>
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+     </form>
+</div>

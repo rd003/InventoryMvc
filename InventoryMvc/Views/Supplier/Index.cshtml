@@ -1,0 +1,83 @@
+﻿@model InventoryMvc.ViewModels.SupplierDisplayViewModel
+@{
+    ViewData["Title"] = "Suppliers";
+}
+<div style="width:70%">
+    <h2>Suppliers</h2>
+    <a href="/Supplier/AddSupplier" class="btn btn-info mb-2">Add more</a>
+
+    @if (Model != null && Model.Suppliers.Count() > 0)
+    {
+        <form method="get" class="d-flex gap-2 mb-2">
+            <input type="text" name="sTerm" placeholder="Search with category name" class="form-control" />
+
+            <button class="btn btn-info" type="submit">Search</button>
+            <a class="btn btn-info" href="/Supplier/Index">Clear</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Supplier Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Tax Number</th>
+                    <th>Payment Terms (Days)</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var supplier in Model.Suppliers)
+                {
+                    <tr>
+                        <td>@supplier.SupplierName</td>
+                        <td>@supplier.ContactPerson</td>
+                        <td>@supplier.Email</td>
+                        <td>@supplier.Phone</td>
+                        <td>@supplier.City</td>
+                        <td>@supplier.State</td>
+                        <td>@supplier.Country</td>
+                        <td>@supplier.TaxNumber</td>
+                        <td>@supplier.PaymentTerms</td>
+                        <td>
+                            <span class="badge @(supplier.IsActive ? "bg-success" : "bg-secondary")">
+                                @(supplier.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+                        <td>
+                            <a class="btn btn-success" href="/Supplier/UpdateSupplier?id=@supplier.Id">Edit</a>
+                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure to delete it?')" href="/Supplier/DeleteSupplier?id=@supplier.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @* pagination *@
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class='page-item @(Model.Page == 1 ? "disabled" : "")'>
+                    <a class="page-link" tabindex="-1" href="/Supplier/Index?sTerm=@Model.STerm&page=@(Model.Page - 1)&limit=@Model.Limit">Previous</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class='page-item @(Model.Page == i ? "active" : "")'><a class="page-link" href="/Supplier/Index?sTerm=@Model.STerm&page=@i&limit=@Model.Limit">@i</a></li>
+                }
+                <li class='page-item @(Model.Page == Model.TotalPages ? "disabled" : "")'>
+                    <a class="page-link" href="/Supplier/Index?sTerm=@Model.STerm&page=@(Model.Page + 1)&limit=@Model.Limit">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    }
+    else
+    {
+        <h3>No record(s) found</h3>
+    }
+</div>
