@@ -1,0 +1,69 @@
+﻿@model InventoryMvc.ViewModels.ProductDisplayViewModel
+@{
+    ViewData["Title"] = "Products";
+}
+<div style="width:70%">
+    <h2>Categories</h2>
+    <a href="/Product/AddProduct" class="btn btn-info mb-2">Add more</a>
+
+    @if (Model != null && Model.Products.Count() > 0)
+    {
+        <form method="get" class="d-flex gap-2 mb-2">
+            <input type="text" name="sTerm" placeholder="Search with product name" class="form-control" />
+
+            <button class="btn btn-info" type="submit">Search</button>
+            <a class="btn btn-info" href="/Product/Index">Clear</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th>Price</th>
+                    <th>Sku</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td>@product.ProductName</td>
+                        <td>@product.CategoryName</td>
+                        <td>@product.SupplierName</td>
+                        <td>@product.Price</td>
+                        <td>@product.Sku</td>
+                        <td>
+                            <a class="btn btn-success" href="/Product/UpdateProduct?id=@product.Id">Edit</a>
+                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure to delete it?')" href="/Product/DeleteProduct?id=@product.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @* pagination *@
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class='page-item @(Model.Page == 1 ? "disabled" : "")'>
+                    <a class="page-link" tabindex="-1" href="/Product/Index?sTerm=@Model.STerm&page=@(Model.Page - 1)&limit=@Model.Limit">Previous</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class='page-item @(Model.Page == i ? "active" : "")'><a class="page-link" href="/Product/Index?sTerm=@Model.STerm&page=@i&limit=@Model.Limit">@i</a></li>
+                }
+                <li class='page-item @(Model.Page == Model.TotalPages ? "disabled" : "")'>
+                    <a class="page-link" href="/Product/Index?sTerm=@Model.STerm&page=@(Model.Page + 1)&limit=@Model.Limit">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    }
+    else
+    {
+        <h3>No record(s) found</h3>
+    }
+</div>
