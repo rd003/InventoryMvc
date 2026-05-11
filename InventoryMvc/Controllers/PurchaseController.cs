@@ -242,7 +242,7 @@ public class PurchaseController : Controller
             {
                 throw new InvalidOperationException("Can not update the product stock, because product stock does not exist.");
             }
-            productStock.Quantity += purchase.Quantity;
+            productStock.Quantity -= purchase.Quantity;
             await _context.SaveChangesAsync();
 
             await transaction.CommitAsync();
