@@ -1,4 +1,6 @@
-﻿namespace InventoryMvc.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace InventoryMvc.ViewModels;
 
 public class AddPurchaseViewModel
 {
@@ -23,4 +25,5 @@ public class AddPurchaseViewModel
     public string? InvoiceNumber { get; set; }
 
     public DateTime? ReceivedDate { get; set; }
+    public List<SelectListItem> ProductList { get; set; } = [];
 }

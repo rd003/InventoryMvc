@@ -1,0 +1,62 @@
+﻿@model InventoryMvc.ViewModels.AddPurchaseViewModel
+@{
+    ViewData["Title"] = "Purchase entry";
+}
+
+<div style="width:60%">
+    <h2>Purchase entry</h2>
+     <a class="btn btn-info mb-2" href="/Purchase/Index">Show All</a>
+
+     <form method="post">
+         <div class="mb-2">
+            <label class="form-label">Purchase Date*</label>
+            <input type="date" asp-for="PurchaseDate" class="form-control"/>
+            <span asp-validation-for="PurchaseDate"></span>
+         </div>
+
+        <div class="mb-2">
+            <label class="form-label">Purchase Order Number</label>
+            <input type="text" asp-for="PurchaseOrderNumber" class="form-control" />
+            @* <span asp-validation-for="PurchaseOrderNumber"></span> *@
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Product*</label>
+            <select class="form-control" asp-for="ProductId" asp-items="Model.ProductList">
+                <option value="">--Select Product--</option>
+            </select>
+            <span asp-validation-for="ProductId"></span>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Quantity*</label>
+            <input type="number" asp-for="Quantity" class="form-control" step="0.01" min="0" />
+            <span asp-validation-for="Quantity"></span>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Unit Price*</label>
+            <input type="number" asp-for="UnitPrice" class="form-control" step="0.01" min="0" />
+            <span asp-validation-for="UnitPrice"></span>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Invoice Number</label>
+            <input type="text" asp-for="InvoiceNumber" class="form-control" />
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Received Date</label>
+            <input type="date" asp-for="ReceivedDate" class="form-control" />
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-2">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+     </form>
+</div>

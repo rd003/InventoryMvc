@@ -1,0 +1,78 @@
+﻿@model InventoryMvc.ViewModels.PurchaseDisplayViewModel
+@{
+    ViewData["Title"] = "Purchase entries";
+}
+<div style="width:100%">
+    <h2>Purchase entries</h2>
+    <a href="/Purchase/AddPurchase" class="btn btn-info mb-2">Add more</a>
+
+    @if (Model != null && Model.Purchases.Count() > 0)
+    {
+        <form method="get" class="d-flex gap-2 mb-2">
+            <input type="text" name="sTerm" placeholder="Purchase order #" class="form-control" />
+
+            <input type="date" name="startDate" />
+            <input type="date" name="endDate" />
+
+            <button class="btn btn-info" type="submit">Search</button>
+            <a class="btn btn-info" href="/Purchase/Index">Clear</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Purchase date</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Description</th>
+                    <th>PO Number</th>
+                    <th>Invoice Number</th>
+                    <th>Received Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var category in Model.Purchases)
+                {
+                    <tr>
+                        <td>@category.PurchaseDate.ToString("dd-MM-yyyy")</td>
+                        <td>@category.ProductName</td>
+                        <td>@category.Quantity</td>
+                        <td>@category.UnitPrice</td>
+                        <td>@(category.Description ?? "-")</td>
+                        <td>@(category.PurchaseOrderNumber ?? "-")</td>
+                        <td>@(category.InvoiceNumber ?? "-")</td>
+                        <td>@(category.ReceivedDate?.ToString("dd-MM-yyyy") ?? "-")</td>
+                        <td>
+                            <a class="btn btn-success" href="/Purchase/UpdatePurchase?id=@category.Id">Edit</a>
+                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure to delete it?')" href="/Purchase/DeletePurchase?id=@category.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @* pagination *@
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class='page-item @(Model.Page == 1 ? "disabled" : "")'>
+                    <a class="page-link" tabindex="-1" href="/Category/Index?sTerm=@Model.STerm&page=@(Model.Page - 1)&limit=@Model.Limit">Previous</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class='page-item @(Model.Page == i ? "active" : "")'><a class="page-link" href="/Category/Index?sTerm=@Model.STerm&page=@i&limit=@Model.Limit">@i</a></li>
+                }
+                <li class='page-item @(Model.Page == Model.TotalPages ? "disabled" : "")'>
+                    <a class="page-link" href="/Category/Index?sTerm=@Model.STerm&page=@(Model.Page + 1)&limit=@Model.Limit">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    }
+    else
+    {
+        <h3>No record(s) found</h3>
+    }
+</div>

@@ -23,7 +23,7 @@ public  static class PurchaseMapper
         };
     }
 
-    public static AddPurchaseViewModel ToPurchaseViewModel(this Purchase purchase)
+    public static AddPurchaseViewModel ToAddPurchaseViewModel(this Purchase purchase)
     {
         return new AddPurchaseViewModel
         {

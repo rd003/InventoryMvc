@@ -12,7 +12,7 @@ public class Purchase
 
     public int? ProductId { get; set; }
 
-    public int? SupplierId { get; set; }
+    public int? SupplierId { get; set; } // Should not present here, it is already in product table. I am not going to remove it. Just leave it null.
 
     public DateTime PurchaseDate { get; set; }
 
@@ -30,5 +30,5 @@ public class Purchase
 
     public Product? Product { get; set; } = null!;
 
-    public Supplier? Supplier { get; set; } = null!;
+    public Supplier? Supplier { get; set; } = null!;  // not needed here
 }
