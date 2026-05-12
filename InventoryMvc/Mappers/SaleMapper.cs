@@ -15,7 +15,7 @@ public  static class SaleMapper
            Price = sale.Price,
            ProductId = sale.ProductId,
            Quantity = sale.Quantity,
-           SellingDate = sale.SellingDate,
+           SellingDate = sale.SellingDate ?? DateTime.UtcNow,
         };
     }
 

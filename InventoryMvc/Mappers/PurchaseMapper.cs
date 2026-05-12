@@ -10,7 +10,7 @@ public  static class PurchaseMapper
         return new Purchase
         {
             Id = purchase.Id,
-            PurchaseDate = purchase.PurchaseDate,
+            PurchaseDate = purchase.PurchaseDate ?? DateTime.UtcNow,
             PurchaseOrderNumber = purchase.PurchaseOrderNumber,
             CreateDate = purchase.CreateDate,
             InvoiceNumber = purchase.InvoiceNumber,

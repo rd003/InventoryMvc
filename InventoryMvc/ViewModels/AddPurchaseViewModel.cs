@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryMvc.ViewModels;
 
@@ -12,7 +13,8 @@ public class AddPurchaseViewModel
 
     public int? SupplierId { get; set; }
 
-    public DateTime PurchaseDate { get; set; }
+    [Required]
+    public DateTime? PurchaseDate { get; set; }
 
     public decimal Quantity { get; set; }
 
