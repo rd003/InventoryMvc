@@ -1,0 +1,63 @@
+﻿@model InventoryMvc.ViewModels.AddSaleViewModel
+@{
+    ViewData["Title"] = "Update Sale Entry";
+}
+
+<div style="width:60%">
+    <h2>Update Sale Entry</h2>
+    <a class="btn btn-info mb-2" href="/Sale/Index">Show All</a>
+
+    <form method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreateDate" />
+        <div class="mb-2">
+            <label class="form-label">Product*</label>
+            <select class="form-control" asp-for="ProductId" asp-items="Model.ProductList">
+                <option value="">--Select Product--</option>
+            </select>
+            <span asp-validation-for="ProductList" class="text-danger"></span>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Selling date*</label>
+            <input type="date" asp-for="SellingDate" class="form-control" />
+            <span asp-validation-for="SellingDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Quantity*</label>
+            <input type="number" asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Price*</label>
+            <input type="number" asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Description*</label>
+            <textarea class="form-control" asp-for="Description">
+
+            </textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-2">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>
+<script>
+    document.getElementById('ProductId').addEventListener('change', async function () {
+        const productId = this.value;
+        if (!productId) return;
+
+        const response = await fetch(`/Sale/GetProductPrice?productId=${productId}`);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        document.getElementById('Price').value = data.price;
+    });
+</script>

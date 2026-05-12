@@ -28,6 +28,8 @@ public class SaleController : Controller
         //saleDisplay.STerm = sTerm;
         saleDisplay.Page = page;
         saleDisplay.Limit = limit;
+        saleDisplay.StartDate = startDate;
+        saleDisplay.EndDate = endDate;
         try
         {
             var saleQuery = _context.Sales.Include(c => c.Product)
@@ -124,12 +126,12 @@ public class SaleController : Controller
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            TempData["Success"] = "Purchase entry is done";
+            TempData["Success"] = "Sale entry is done";
             return RedirectToAction(nameof(AddSale));
         }
         catch (Exception ex)
         {
-            TempData["Error"] = "Error on adding purchase entry.";
+            TempData["Error"] = "Error on adding sale entry.";
             _logger.LogError(ex.Message);
             return View(saleViewModel);
         }
@@ -138,32 +140,32 @@ public class SaleController : Controller
     public async Task<IActionResult> UpdateSale(int id)
     {
         var products = await _context.Products.ToListAsync();
-        var purchase = await _context.Purchases.FindAsync(id);
-        if (purchase is null)
+        var sale = await _context.Sales.FindAsync(id);
+        if (sale is null)
         {
-            throw new InvalidOperationException("Purchase entry does not exists");
+            throw new InvalidOperationException("Sale entry does not exists");
         }
-        var purchaseViewModel = purchase.ToAddPurchaseViewModel();
+        var saleViewModel = sale.ToAddSaleViewModel();
 
-        purchaseViewModel.ProductList = products.Select(c => new SelectListItem
+        saleViewModel.ProductList = products.Select(c => new SelectListItem
         {
             Text = c.ProductName,
             Value = c.Id.ToString(),
-            Selected = c.Id == purchase.ProductId,
+            Selected = c.Id == sale.ProductId,
         }).ToList();
-        return View(purchaseViewModel);
+        return View(saleViewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateSale(AddPurchaseViewModel purchase)
+    public async Task<IActionResult> UpdateSale(AddSaleViewModel sale)
     {
         var products = await _context.Products.ToListAsync();
 
-        purchase.ProductList = products.Select(c => new SelectListItem
+        sale.ProductList = products.Select(c => new SelectListItem
         {
             Text = c.ProductName,
             Value = c.Id.ToString(),
-            Selected = c.Id == purchase.ProductId,
+            Selected = c.Id == sale.ProductId,
         }).ToList();
 
         await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -172,70 +174,79 @@ public class SaleController : Controller
         {
             if (!ModelState.IsValid)
             {
-                return View(purchase);
+                return View(sale);
             }
 
-            if (purchase.Quantity <= 0)
+            if (sale.Quantity <= 0)
             {
                 throw new InvalidOperationException("Quantity can not be <= 0");
             }
 
-            var existingPurchase = await _context.Purchases.AsNoTracking().FirstAsync(x => x.Id == purchase.Id);
+            var existingSale = await _context.Sales.AsNoTracking().FirstAsync(x => x.Id == sale.Id);
 
-            var purchaseToUpdate = purchase.ToPurchase();
-            purchaseToUpdate.UpdateDate = DateTime.UtcNow;
-            _context.Purchases.Update(purchaseToUpdate);
+            if(existingSale is null)
+            {
+                throw new InvalidOperationException("Sale for this id does not exists.");
+            }
+
+            var saleToUpdate = sale.ToSale();
+            saleToUpdate.UpdateDate = DateTime.UtcNow;
+            _context.Sales.Update(saleToUpdate);
 
             // update stock
-            // product1-> 2 (qty) stock -> 5-2= 3
-            // product1-> 3 (qty) stock -> 3 + (2-3=-1) = 2
 
-            var productStock = await _context.Stocks.FirstOrDefaultAsync(s => s.ProductId == purchase.ProductId);
+            var productStock = await _context.Stocks.FirstOrDefaultAsync(s => s.ProductId == sale.ProductId);
             if (productStock is null)
             {
                 throw new InvalidOperationException("Product stock is null");
             }
-            decimal delta = purchase.Quantity - existingPurchase.Quantity;
+            decimal delta = sale.Quantity - existingSale.Quantity;
             // delta = new - old
-            // old qty: 2, new quantity:3 , delta = 3-2 = 1 (stock increases)
-            // old : 3, new 2, delta = 2-3 = -1 (stock decreases)
-            productStock.Quantity += delta;
+            // old qty: 2, new quantity:3 , delta = 3-2 = 1 (stock decreases)
+            // old : 3, new 2, delta = 2-3 = -1 (stock increases)
+
+            if(delta>0 && delta > productStock.Quantity)
+            {
+                throw new InvalidOperationException("You can not sell more than stock.");
+            }
+
+            productStock.Quantity -= delta;
             productStock.UpdateDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
             await transaction.CommitAsync();
 
-            TempData["Success"] = "Purchase entry is updated";
+            TempData["Success"] = "Sale entry is updated";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            TempData["Error"] = "Purchase entry be updated";
-            return View(purchase);
+            TempData["Error"] = "Sale entry can not be updated";
+            return View(sale);
         }
     }
 
-    public async Task<IActionResult> DeletePurchase(int id)
+    public async Task<IActionResult> DeleteSale(int id)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync();
 
         try
         {
-            var purchase = await _context.Purchases.FindAsync(id);
-            if (purchase is null)
+            var sale = await _context.Sales.FindAsync(id);
+            if (sale is null)
             {
-                throw new InvalidOperationException("Purchase does not exists");
+                throw new InvalidOperationException("Sale does not exists");
             }
-            purchase.DeleteDate = DateTime.UtcNow;
+            sale.DeleteDate = DateTime.UtcNow;
 
-            var productStock = await _context.Stocks.FirstOrDefaultAsync(x => x.ProductId == purchase.ProductId);
+            var productStock = await _context.Stocks.FirstOrDefaultAsync(x => x.ProductId == sale.ProductId);
             if (productStock is null)
             {
                 throw new InvalidOperationException("Can not update the product stock, because product stock does not exist.");
             }
-            productStock.Quantity -= purchase.Quantity;
+            productStock.Quantity += sale.Quantity;
             await _context.SaveChangesAsync();
 
             await transaction.CommitAsync();
@@ -243,8 +254,16 @@ public class SaleController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            TempData["Error"] = "Category could not be updated";
+            TempData["Error"] = "Sale entry could not be deleted";
         }
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetProductPrice(int productId)
+    {
+        var product = await _context.Products.FindAsync(productId);
+        if (product is null) return NotFound();
+        return Json(new { price = product.Price });
     }
 }

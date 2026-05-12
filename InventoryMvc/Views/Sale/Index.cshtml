@@ -1,0 +1,71 @@
+﻿@model InventoryMvc.ViewModels.SaleDisplayViewModel
+@{
+    ViewData["Title"] = "Sale entries";
+}
+<div style="width:70%">
+    <h2>Sale entries</h2>
+    <a href="/Sale/AddSale" class="btn btn-info mb-2">Add more</a>
+
+    @if (Model != null && Model.Sales.Count() > 0)
+    {
+        <form method="get" class="d-flex gap-2 mb-2">
+            @* <input type="text" name="sTerm" placeholder="Search with category name" class="form-control" /> *@
+            <input type="date" name="startDate" />
+            <input type="date" name="endDate" />
+
+            <button class="btn btn-info" type="submit">Search</button>
+            <a class="btn btn-info" href="/Sale/Index">Clear</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Selling Date</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var sale in Model.Sales)
+                {
+                    <tr>
+                        <td>@sale.SellingDate.ToString("dd-MM-yyyy")</td>
+                        <td>@sale.ProductName</td>
+                        <td>@sale.Price</td>
+                        <td>@sale.Quantity</td>
+                        <td>@sale.Description</td>
+                        <td>
+                            <a class="btn btn-success" href="/Sale/UpdateSale?id=@sale.Id">Edit</a>
+                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure to delete it?')" href="/Sale/DeleteSale?id=@sale.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @* pagination *@
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class='page-item @(Model.Page == 1 ? "disabled" : "")'>
+                    <a class="page-link" tabindex="-1" href="/Sale/Index?startDate=@Model.StartDate&endDate=@Model.EndDate&page=@(Model.Page - 1)&limit=@Model.Limit">Previous</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class='page-item @(Model.Page == i ? "active" : "")'><a class="page-link" href="/Sale/Index?startDate=@Model.StartDate&endDate=@Model.EndDate&page=@i&limit=@Model.Limit">@i</a></li>
+                }
+                <li class='page-item @(Model.Page == Model.TotalPages ? "disabled" : "")'>
+                    <a class="page-link" href="/Sale/Index?startDate=@Model.StartDate&endDate=@Model.EndDate&page=@(Model.Page + 1)&limit=@Model.Limit">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    }
+    else
+    {
+        <h3>No record(s) found</h3>
+    }
+</div>

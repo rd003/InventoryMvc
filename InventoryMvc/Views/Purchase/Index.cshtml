@@ -58,14 +58,14 @@
         <nav aria-label="...">
             <ul class="pagination">
                 <li class='page-item @(Model.Page == 1 ? "disabled" : "")'>
-                    <a class="page-link" tabindex="-1" href="/Purchase/Index?sTerm=@Model.STerm&page=@(Model.Page - 1)&limit=@Model.Limit">Previous</a>
+                    <a class="page-link" tabindex="-1" href="/Purchase/Index?startDate=@Model.StartDate&endDate=@Model.EndDate&sTerm=@Model.STerm&page=@(Model.Page - 1)&limit=@Model.Limit">Previous</a>
                 </li>
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
-                    <li class='page-item @(Model.Page == i ? "active" : "")'><a class="page-link" href="/Purchase/Index?sTerm=@Model.STerm&page=@i&limit=@Model.Limit">@i</a></li>
+                    <li class='page-item @(Model.Page == i ? "active" : "")'><a class="page-link" href="/Purchase/Index?startDate=@Model.StartDate&endDate=@Model.EndDate&sTerm=@Model.STerm&page=@i&limit=@Model.Limit">@i</a></li>
                 }
                 <li class='page-item @(Model.Page == Model.TotalPages ? "disabled" : "")'>
-                    <a class="page-link" href="/Purchase/Index?sTerm=@Model.STerm&page=@(Model.Page + 1)&limit=@Model.Limit">Next</a>
+                    <a class="page-link" href="/Purchase/Index?startDate=@Model.StartDate&endDate=@Model.EndDate&sTerm=@Model.STerm&page=@(Model.Page + 1)&limit=@Model.Limit">Next</a>
                 </li>
             </ul>
         </nav>

@@ -28,6 +28,8 @@ public class PurchaseController : Controller
         purchaseDisplay.STerm = sTerm;
         purchaseDisplay.Page = page;
         purchaseDisplay.Limit = limit;
+        purchaseDisplay.StartDate = startDate;
+        purchaseDisplay.EndDate = endDate;
         try
         {
             var purchaseQuery = _context.Purchases.Include(c => c.Product)
@@ -219,7 +221,7 @@ public class PurchaseController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            TempData["Error"] = "Purchase entry be updated";
+            TempData["Error"] = "Purchase entry can not be updated";
             return View(purchase);
         }
     }
@@ -250,7 +252,7 @@ public class PurchaseController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            TempData["Error"] = "Category could not be updated";
+            TempData["Error"] = "Purchase entry could not be deleted";
         }
         return RedirectToAction(nameof(Index));
     }
