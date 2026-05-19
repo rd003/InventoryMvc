@@ -3,7 +3,7 @@
     ViewData["Title"] = "Products";
 }
 <div style="width:70%">
-    <h2>Categories</h2>
+    <h2>Products</h2>
     <a href="/Product/AddProduct" class="btn btn-info mb-2">Add more</a>
 
     @if (Model != null && Model.Products.Count() > 0)
@@ -20,7 +20,7 @@
                 <tr>
                     <th>Product Name</th>
                     <th>Product</th>
-                    <th>Supplier</th>
+                    @* <th>Supplier</th> *@
                     <th>Price</th>
                     <th>Sku</th>
                     <th>Action</th>
@@ -33,7 +33,7 @@
                     <tr>
                         <td>@product.ProductName</td>
                         <td>@product.CategoryName</td>
-                        <td>@product.SupplierName</td>
+                        @* <td>@product.SupplierName</td> *@
                         <td>@product.Price</td>
                         <td>@product.Sku</td>
                         <td>

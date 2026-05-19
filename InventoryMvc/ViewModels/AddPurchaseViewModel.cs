@@ -28,4 +28,5 @@ public class AddPurchaseViewModel
 
     public DateTime? ReceivedDate { get; set; }
     public List<SelectListItem> ProductList { get; set; } = [];
+    public List<SelectListItem> SupplierList { get; set; } = [];
 }

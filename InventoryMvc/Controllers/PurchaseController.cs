@@ -32,7 +32,9 @@ public class PurchaseController : Controller
         purchaseDisplay.EndDate = endDate;
         try
         {
-            var purchaseQuery = _context.Purchases.Include(c => c.Product)
+            var purchaseQuery = _context.Purchases
+                .Include(c => c.Product)
+                .Include(c => c.Supplier)
                 .Select(p => new ReadPurchaseViewModel
                 {
                     Id = p.Id,
@@ -40,6 +42,7 @@ public class PurchaseController : Controller
                     InvoiceNumber = p.InvoiceNumber,
                     ProductId = p.ProductId ?? 0,
                     ProductName = p.Product==null? "": p.Product.ProductName,
+                    SupplierName = p.Supplier == null ?"":p.Supplier.SupplierName,
                     Description = p.Description,
                     PurchaseDate = p.PurchaseDate,
                     PurchaseOrderNumber = p.PurchaseOrderNumber,
@@ -74,12 +77,18 @@ public class PurchaseController : Controller
     public async Task<IActionResult> AddPurchase()
     {
         var products = await _context.Products.ToListAsync();
+        var supplier = await _context.Suppliers.ToListAsync();
         var purchaseViewModel = new AddPurchaseViewModel()
         {
             ProductList = products.Select(c => new SelectListItem
             {
                 Text = c.ProductName,
                 Value = c.Id.ToString()
+            }).ToList(),
+            SupplierList = supplier.Select(s=> new SelectListItem
+            {
+                Text = s.SupplierName,
+                Value = s.Id.ToString()
             }).ToList()
         };
         return View(purchaseViewModel);
@@ -89,12 +98,19 @@ public class PurchaseController : Controller
     public async Task<IActionResult> AddPurchase(AddPurchaseViewModel purchase)
     {
         var products = await _context.Products.ToListAsync();
+        var supplier = await _context.Suppliers.ToListAsync();
+
         var purchaseViewModel = new AddPurchaseViewModel()
         {
             ProductList = products.Select(c => new SelectListItem
             {
                 Text = c.ProductName,
                 Value = c.Id.ToString()
+            }).ToList(),
+            SupplierList = supplier.Select(s => new SelectListItem
+            {
+                Text = s.SupplierName,
+                Value = s.Id.ToString()
             }).ToList()
         };
         await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -147,6 +163,8 @@ public class PurchaseController : Controller
     public async Task<IActionResult> UpdatePurchase(int id)
     {
         var products = await _context.Products.ToListAsync();
+        var suppliers = await _context.Suppliers.ToListAsync();
+
         var purchase = await _context.Purchases.FindAsync(id);
         if (purchase is null)
         {
@@ -160,6 +178,12 @@ public class PurchaseController : Controller
             Value = c.Id.ToString(),
             Selected = c.Id == purchase.ProductId,
         }).ToList();
+        purchaseViewModel.SupplierList = suppliers.Select(s => new SelectListItem
+        {
+            Text = s.SupplierName,
+            Value = s.Id.ToString(),
+            Selected = s.Id == purchase.SupplierId,
+        }).ToList();
         return View(purchaseViewModel);
     }
 
@@ -167,12 +191,19 @@ public class PurchaseController : Controller
     public async Task<IActionResult> UpdatePurchase(AddPurchaseViewModel purchase)
     {
         var products = await _context.Products.ToListAsync();
+        var suppliers = await _context.Suppliers.ToListAsync();
 
         purchase.ProductList = products.Select(c => new SelectListItem
         {
             Text = c.ProductName,
             Value = c.Id.ToString(),
             Selected = c.Id == purchase.ProductId,
+        }).ToList();
+        purchase.SupplierList = suppliers.Select(s => new SelectListItem
+        {
+            Text = s.SupplierName,
+            Value = s.Id.ToString(),
+            Selected = s.Id == purchase.SupplierId,
         }).ToList();
 
         await using var transaction = await _context.Database.BeginTransactionAsync();

@@ -31,6 +31,14 @@
         </div>
 
         <div class="mb-2">
+            <label class="form-label">Supplier</label>
+            <select class="form-control" asp-for="SupplierId" asp-items="Model.SupplierList">
+                <option value="">--Select Supplier--</option>
+            </select>
+            @* <span asp-validation-for="ProductId"></span> *@
+        </div>
+
+        <div class="mb-2">
             <label class="form-label">Quantity*</label>
             <input type="number" asp-for="Quantity" class="form-control" step="0.01" min="0" />
             <span asp-validation-for="Quantity"></span>

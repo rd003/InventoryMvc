@@ -22,5 +22,5 @@ public class ReadProductViewModel
     [MaxLength(200)]
     public string Sku { get; set; } = null!;
     public string CategoryName { get; set; } = null!;
-    public string? SupplierName { get; set; }
+    //public string? SupplierName { get; set; }
 }

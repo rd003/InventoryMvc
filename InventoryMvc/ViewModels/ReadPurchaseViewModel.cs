@@ -24,5 +24,5 @@ public class ReadPurchaseViewModel
 
     public DateTime? ReceivedDate { get; set; }
     public string ProductName { get; set; } = string.Empty;
-   // public string? SupplierName { get; set; }
+    public string? SupplierName { get; set; }
 }

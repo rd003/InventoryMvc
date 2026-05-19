@@ -23,6 +23,7 @@
                 <tr>
                     <th>Purchase date</th>
                     <th>Product</th>
+                    <th>Supplier</th>
                     <th>Quantity</th>
                     <th>Unit Price</th>
                     <th>Description</th>
@@ -34,20 +35,21 @@
             </thead>
 
             <tbody>
-                @foreach (var category in Model.Purchases)
+                @foreach (var supplier in Model.Purchases)
                 {
                     <tr>
-                        <td>@category.PurchaseDate.ToString("dd-MM-yyyy")</td>
-                        <td>@category.ProductName</td>
-                        <td>@category.Quantity</td>
-                        <td>@category.UnitPrice</td>
-                        <td>@(category.Description ?? "-")</td>
-                        <td>@(category.PurchaseOrderNumber ?? "-")</td>
-                        <td>@(category.InvoiceNumber ?? "-")</td>
-                        <td>@(category.ReceivedDate?.ToString("dd-MM-yyyy") ?? "-")</td>
+                        <td>@supplier.PurchaseDate.ToString("dd-MM-yyyy")</td>
+                        <td>@supplier.ProductName</td>
+                        <td>@supplier.SupplierName</td>
+                        <td>@supplier.Quantity</td>
+                        <td>@supplier.UnitPrice</td>
+                        <td>@(supplier.Description ?? "-")</td>
+                        <td>@(supplier.PurchaseOrderNumber ?? "-")</td>
+                        <td>@(supplier.InvoiceNumber ?? "-")</td>
+                        <td>@(supplier.ReceivedDate?.ToString("dd-MM-yyyy") ?? "-")</td>
                         <td>
-                            <a class="btn btn-success" href="/Purchase/UpdatePurchase?id=@category.Id">Edit</a>
-                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure to delete it?')" href="/Purchase/DeletePurchase?id=@category.Id">Delete</a>
+                            <a class="btn btn-success" href="/Purchase/UpdatePurchase?id=@supplier.Id">Edit</a>
+                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure to delete it?')" href="/Purchase/DeletePurchase?id=@supplier.Id">Delete</a>
                         </td>
                     </tr>
                 }

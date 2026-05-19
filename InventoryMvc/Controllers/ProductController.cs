@@ -31,7 +31,6 @@ public class ProductController : Controller
         try
         {
             var productsQuery = _context.Products
-                .Include(p=>p.Supplier)
                 .Include(p=>p.Category)
                 .Select(x => new ReadProductViewModel
                 {
@@ -43,7 +42,6 @@ public class ProductController : Controller
                    CreateDate = x.CreateDate,
                    Sku = x.Sku,
                    SupplierId = x.SupplierId,
-                   SupplierName = x.Supplier == null? "": x.Supplier.SupplierName
                 });
             if (!string.IsNullOrWhiteSpace(sTerm))
             {
@@ -73,12 +71,12 @@ public class ProductController : Controller
             {
                 Text = c.CategoryName,
                 Value = c.Id.ToString()
-            }).ToList(),
-            SupplierList = suppliers.Select(s=> new SelectListItem
-            { 
-              Text = s.SupplierName,
-              Value = s.Id.ToString()
             }).ToList()
+            //SupplierList = suppliers.Select(s=> new SelectListItem
+            //{ 
+            //  Text = s.SupplierName,
+            //  Value = s.Id.ToString()
+            //}).ToList()
         };
         return View(productViewModel);
     }
@@ -87,19 +85,20 @@ public class ProductController : Controller
     public async Task<IActionResult> AddProduct(AddProductViewModel product)
     {
         var categories = await _context.Categories.ToListAsync();
-        var suppliers = await _context.Suppliers.ToListAsync();
+        //var suppliers = await _context.Suppliers.ToListAsync();
         var productViewModel = new AddProductViewModel()
         {
             CategoryList = categories.Select(c => new SelectListItem
             {
                 Text = c.CategoryName,
                 Value = c.Id.ToString()
-            }).ToList(),
-            SupplierList = suppliers.Select(s => new SelectListItem
-            {
-                Text = s.SupplierName,
-                Value = s.Id.ToString()
             }).ToList()
+            //,
+            //SupplierList = suppliers.Select(s => new SelectListItem
+            //{
+            //    Text = s.SupplierName,
+            //    Value = s.Id.ToString()
+            //}).ToList()
         };
         try
         {
@@ -123,7 +122,7 @@ public class ProductController : Controller
     public async Task<IActionResult> UpdateProduct(int id)
     {
         var categories = await _context.Categories.ToListAsync();
-        var suppliers = await _context.Suppliers.ToListAsync();
+        //var suppliers = await _context.Suppliers.ToListAsync();
 
         var product = await _context.Products.FindAsync(id);
         if (product is null)
@@ -139,12 +138,12 @@ public class ProductController : Controller
             Selected = c.Id == product.CategoryId
         }).ToList();
 
-        productViewModel.SupplierList = suppliers.Select(c => new SelectListItem
-        {
-            Text = c.SupplierName,
-            Value = c.Id.ToString(),
-            Selected = c.Id == product.SupplierId
-        }).ToList();
+        //productViewModel.SupplierList = suppliers.Select(c => new SelectListItem
+        //{
+        //    Text = c.SupplierName,
+        //    Value = c.Id.ToString(),
+        //    Selected = c.Id == product.SupplierId
+        //}).ToList();
         return View(productViewModel);
     }
 
@@ -152,7 +151,7 @@ public class ProductController : Controller
     public async Task<IActionResult> UpdateProduct(AddProductViewModel product)
     {
         var categories = await _context.Categories.AsNoTracking().ToListAsync();
-        var suppliers = await _context.Suppliers.ToListAsync();
+       // var suppliers = await _context.Suppliers.ToListAsync();
 
         var productViewModel = new AddProductViewModel()
         {
@@ -163,12 +162,12 @@ public class ProductController : Controller
                 Selected = c.Id == product.CategoryId
             }).ToList()
         };
-        productViewModel.SupplierList = suppliers.Select(c => new SelectListItem
-        {
-            Text = c.SupplierName,
-            Value = c.Id.ToString(),
-            Selected = c.Id == product.SupplierId
-        }).ToList();
+        //productViewModel.SupplierList = suppliers.Select(c => new SelectListItem
+        //{
+        //    Text = c.SupplierName,
+        //    Value = c.Id.ToString(),
+        //    Selected = c.Id == product.SupplierId
+        //}).ToList();
         try
         {
             if (!ModelState.IsValid)

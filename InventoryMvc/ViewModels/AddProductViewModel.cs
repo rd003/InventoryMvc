@@ -23,5 +23,5 @@ public class AddProductViewModel
     [MaxLength(200)]
     public string Sku { get; set; } = null!;
     public List<SelectListItem> CategoryList { get; set; } = [];
-    public List<SelectListItem> SupplierList { get; set; } = [];
+    //public List<SelectListItem> SupplierList { get; set; } = [];
 }
